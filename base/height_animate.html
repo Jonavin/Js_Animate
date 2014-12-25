@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>js高度动画</title>
+</head>
+<style>
+    *,body{
+        margin:0;
+        padding:0;
+    }
+    .hn{
+        float: left;
+        margin: 0 10px 0 10px;
+        background-color: skyblue;
+        width: 100px;
+        height: 50px;
+        cursor: pointer;
+    }
+</style>
+<body>
+   <div class="hn"></div>
+   <div class="hn"></div>
+   <div class="hn"></div>
+   <div class="hn"></div>
+   <script>
+       (function(win,doc){
+           /*
+            获取元素样式
+            */
+           function css(obj,cn){
+               var cs = obj.currentStyle || getComputedStyle(obj,null);
+               return cs[cn];
+           }
+           /**
+            * 根据类名获取元素
+            * @param obj
+            * @param csn
+            * @returns {NodeList}
+            */
+           function getByClass(csn){
+               // TODO 需要改进  可以使用 querySelectorAll();
+               return doc.getElementsByClassName(csn);
+           }
+           /**
+            * 动画处理函数
+            * at:动画目标值
+            */
+           function animate(obj,at){
+                clearInterval(obj.timer);
+                obj.timer = setInterval(function(){
+                    var _h = parseInt(css(obj,"height"));//div高度
+                    var speed = Math.ceil((at - _h)/8);// 此处有bug,(8为缓动系数)
+                    if(_h === at){
+                        clearInterval(obj.timer);
+                    }else{
+                        obj.style.height = _h + speed + "px";
+                    }
+                },30);
+           }
+           var divs = getByClass("hn");//所有要动画的div
+           for(var i = 0,n=divs.length;i<n;i++){
+               var div = divs[i];
+               //鼠标移入事件
+               div.onmouseover = function(e){
+                   animate(this,100);//高度增加到100
+               };
+               //鼠标移除事件
+               div.onmouseout = function(e){
+                   animate(this,50);//高度减小到10
+               };
+           }
+       })(window,document);
+   </script>
+</body>
+</html>
